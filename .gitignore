@@ -1,0 +1,21 @@
+node_modules/
+.expo/
+dist/
+web-build/
+*.log
+.DS_Store
+
+# Env files (do not commit secrets)
+.env
+.env.local
+.env.production
+
+# Native build output
+ios/
+android/
+
+# Local agent state
+.commandcode/
+
+# Expo
+expo-env.d.ts

@@ -1,0 +1,63 @@
+{
+  "expo": {
+    "name": "Shuttle Tracker",
+    "slug": "shuttle-tracker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#2563EB"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.shuttletracker.app",
+      "config": {
+        "googleMapsApiKey": "YOUR_IOS_GOOGLE_MAPS_API_KEY"
+      },
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Shuttle Tracker uses your location to verify you are at a registered stop before requesting a pickup.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Shuttle Tracker needs background location access to share your live location with students while you drive.",
+        "UIBackgroundModes": ["location", "fetch"]
+      }
+    },
+    "android": {
+      "package": "com.shuttletracker.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#2563EB"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "YOUR_ANDROID_GOOGLE_MAPS_API_KEY"
+        }
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "FOREGROUND_SERVICE",
+        "VIBRATE",
+        "POST_NOTIFICATIONS"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Shuttle Tracker needs background location access to share your live location with students while you drive.",
+          "isAndroidBackgroundLocationEnabled": true,
+          "isIosBackgroundLocationEnabled": true
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#2563EB"
+        }
+      ]
+    ]
+  }
+}
