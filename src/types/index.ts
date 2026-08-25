@@ -74,6 +74,16 @@ export interface DispatchAlert {
   claimed_at: string | null;
 }
 
+export interface RequestRosterRow {
+  request_id: string;
+  stop_id: string;
+  stop_name: string;
+  status: PickupStatus;
+  student_number: string;
+  full_name: string;
+  created_at: string;
+}
+
 export interface Deadzone {
   id: string;
   name: string;

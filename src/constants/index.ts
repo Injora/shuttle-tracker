@@ -5,7 +5,7 @@ export const REAL_STOPS = [
     kind: 'college' as const,
     lat: 18.6204503,
     lng: 73.9114378,
-    geofence_radius_m: 150,
+    geofence_radius_m: 300,
     order_index: 0,
   },
   {

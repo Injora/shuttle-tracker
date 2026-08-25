@@ -38,6 +38,7 @@ export async function registerForPushNotifications(): Promise<string | null> {
 }
 
 export async function showLocalAlert(title: string, body: string): Promise<void> {
+  if (Platform.OS === 'web') return;
   await Notifications.scheduleNotificationAsync({
     content: {
       title,

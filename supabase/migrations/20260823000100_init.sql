@@ -217,7 +217,7 @@ create trigger expire_stale_requests_trigger
 -- ------------------------------------------------------------
 insert into public.stops (id, name, kind, lat, lng, geofence_radius_m, order_index)
 values
-  ('college', 'D Y Patil School Of Management', 'college', 18.6204503, 73.9114378, 150, 0),
+  ('college', 'D Y Patil School Of Management', 'college', 18.6204503, 73.9114378, 300, 0),
   ('hostel_1', 'YourSpace 2 Hostel', 'hostel', 18.6141596, 73.9116837, 150, 1),
   ('hostel_2', 'Your Space Students Hostel (Lohegaon)', 'hostel', 18.6119308, 73.9117003, 150, 2),
   ('hostel_3', 'Tribe Loka Hostel & CoLiving', 'hostel', 18.6037817, 73.9153888, 150, 3)

@@ -6,6 +6,7 @@ import { Card, CardHeader } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { Badge } from '@/components/Badge';
 import { AlertBanner, LoadingState, EmptyState } from '@/components/Feedback';
+import RequestRoster from '@/components/RequestRoster';
 import { useGeofence } from '@/hooks/useGeofence';
 import { fetchStops, fetchMyActiveRequest, callEdgeFunction, fetchPendingCount } from '@/lib/api';
 import { supabase } from '@/lib/supabase';
@@ -77,11 +78,12 @@ export default function StudentHomeScreen() {
     setSubmitting(true);
     try {
       const loc = await getCurrentLocation();
+      const stopId = geofence.stop?.id ?? hostelStopId;
       const result = await callEdgeFunction<{ ok: boolean; error?: string; dispatched?: boolean }>(
         'submit-request',
         {
           student_id: user!.id,
-          stop_id: hostelStopId,
+          stop_id: stopId,
           lat: loc.lat,
           lng: loc.lng,
         },
@@ -134,8 +136,8 @@ export default function StudentHomeScreen() {
         ) : (
           <Card style={styles.card}>
             <CardHeader
-              title={hostelStop?.name ?? 'Your hostel'}
-              subtitle="Request a pickup from your hostel"
+              title={geofence.stop?.name ?? hostelStop?.name ?? 'Your stop'}
+              subtitle={geofence.stop ? 'Request a pickup from your current stop' : 'Request a pickup from your hostel'}
               right={<Badge label={`${pendingCount} / ${QUORUM_SIZE} requested`} tone={pendingCount >= QUORUM_SIZE ? 'success' : 'info'} />}
             />
 
@@ -155,7 +157,7 @@ export default function StudentHomeScreen() {
               <View>
                 <AlertBanner
                   title="Not at a registered stop"
-                  message="You must be at your hostel's geofence area to request a pickup."
+                  message="You must be inside your hostel's or the college geofence to request a pickup."
                   tone="warning"
                   icon="location-outline"
                 />
@@ -173,6 +175,8 @@ export default function StudentHomeScreen() {
             live on the map.
           </Text>
         </Card>
+
+        <RequestRoster />
       </ScrollView>
     </Screen>
   );

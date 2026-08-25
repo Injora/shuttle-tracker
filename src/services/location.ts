@@ -1,6 +1,9 @@
+import { Platform } from 'react-native';
 import * as Location from 'expo-location';
 import type { LocationSubscription } from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
+
+const IS_WEB = Platform.OS === 'web';
 
 export const BACKGROUND_LOCATION_TASK = 'background-location-task';
 
@@ -40,16 +43,18 @@ function emit(sample: LocationSample) {
   }
 }
 
-TaskManager.defineTask(BACKGROUND_LOCATION_TASK, ({ data, error }) => {
-  if (error) {
-    console.warn('Background location task error', error);
-    return;
-  }
-  const { locations } = data as { locations: Location.LocationObject[] };
-  if (locations && locations.length > 0) {
-    emit(toSample(locations[locations.length - 1]));
-  }
-});
+if (!IS_WEB) {
+  TaskManager.defineTask(BACKGROUND_LOCATION_TASK, ({ data, error }) => {
+    if (error) {
+      console.warn('Background location task error', error);
+      return;
+    }
+    const { locations } = data as { locations: Location.LocationObject[] };
+    if (locations && locations.length > 0) {
+      emit(toSample(locations[locations.length - 1]));
+    }
+  });
+}
 
 export async function requestLocationPermissions(background = false) {
   const fg = await Location.requestForegroundPermissionsAsync();
@@ -89,6 +94,7 @@ export async function startForegroundTracking(
 }
 
 export async function startBackgroundTracking(): Promise<void> {
+  if (IS_WEB) return;
   await requestLocationPermissions(true);
 
   const started = await Location.hasStartedLocationUpdatesAsync(
@@ -112,6 +118,7 @@ export async function startBackgroundTracking(): Promise<void> {
 }
 
 export async function stopBackgroundTracking(): Promise<void> {
+  if (IS_WEB) return;
   if (await Location.hasStartedLocationUpdatesAsync(BACKGROUND_LOCATION_TASK)) {
     await Location.stopLocationUpdatesAsync(BACKGROUND_LOCATION_TASK);
   }
@@ -135,6 +142,36 @@ export function clearLocationListeners(): void {
 }
 
 export async function getCurrentLocation(): Promise<LocationSample> {
+  if (IS_WEB) {
+    return new Promise((resolve, reject) => {
+      if (!navigator?.geolocation) {
+        reject(new Error('Geolocation is not supported in this browser.'));
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const loc: Location.LocationObject = {
+            coords: {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              altitude: position.coords.altitude ?? null,
+              accuracy: position.coords.accuracy ?? null,
+              altitudeAccuracy: position.coords.altitudeAccuracy ?? null,
+              heading: position.coords.heading ?? null,
+              speed: position.coords.speed ?? null,
+            },
+            timestamp: position.timestamp,
+          };
+          resolve(toSample(loc));
+        },
+        (err) => reject(new Error(err.message || 'Unable to get location.')),
+        // Wi-Fi/cell triangulation is more reliable than GPS indoors and on
+        // upper floors, so prefer a lower-accuracy, cached-position approach.
+        { enableHighAccuracy: false, maximumAge: 300000, timeout: 15000 },
+      );
+    });
+  }
+
   const { status } = await Location.requestForegroundPermissionsAsync();
   if (status !== 'granted') {
     throw new Error('Location permission is required.');

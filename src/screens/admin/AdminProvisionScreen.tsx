@@ -6,6 +6,7 @@ import { Input } from '@/components/Input';
 import { Button } from '@/components/Button';
 import { Badge } from '@/components/Badge';
 import { AlertBanner } from '@/components/Feedback';
+import RequestRoster from '@/components/RequestRoster';
 import { callEdgeFunction, fetchAllStops } from '@/lib/api';
 import { supabase } from '@/lib/supabase';
 import { Stop } from '@/types';
@@ -114,6 +115,8 @@ export default function AdminProvisionScreen() {
 
           <Button title="Create Account" onPress={handleProvision} loading={loading} style={styles.submit} />
         </Card>
+
+        <RequestRoster />
       </ScrollView>
     </Screen>
   );

@@ -5,6 +5,7 @@ import { Card, CardHeader } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { Badge } from '@/components/Badge';
 import { AlertBanner, LoadingState, EmptyState } from '@/components/Feedback';
+import RequestRoster from '@/components/RequestRoster';
 import { useAuth } from '@/context/AuthContext';
 import {
   fetchStops,
@@ -200,6 +201,8 @@ export default function DriverDashboardScreen() {
             ))}
           </Card>
         ) : null}
+
+        <RequestRoster />
       </ScrollView>
     </Screen>
   );

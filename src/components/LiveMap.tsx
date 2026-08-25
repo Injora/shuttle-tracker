@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import MapView, { Marker, Circle, Region } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
-import { Stop, ShuttleLocation } from '@/types';
+import { Stop, ShuttleLocation, GeoPoint } from '@/types';
 import { colors } from '@/theme';
 
 interface LiveMapProps {
   stops: Stop[];
   shuttleLocation?: ShuttleLocation | null;
+  userLocation?: GeoPoint | null;
   signalDegraded?: boolean;
   initialRegion?: Region;
 }
@@ -22,12 +23,29 @@ const DEFAULT_REGION: Region = {
 export function LiveMap({
   stops,
   shuttleLocation,
+  userLocation,
   signalDegraded = false,
   initialRegion = DEFAULT_REGION,
 }: LiveMapProps) {
+  const mapRef = useRef<MapView>(null);
+  const fittedStops = useRef(false);
+
+  useEffect(() => {
+    if (stops.length === 0 || fittedStops.current) return;
+    fittedStops.current = true;
+    mapRef.current?.fitToCoordinates(
+      stops.map((s) => ({ latitude: s.lat, longitude: s.lng })),
+      { edgePadding: { top: 60, right: 60, bottom: 60, left: 60 }, animated: true },
+    );
+  }, [stops]);
+
   return (
     <View style={styles.container}>
-      <MapView style={styles.map} initialRegion={initialRegion}>
+      <MapView
+        ref={mapRef}
+        style={styles.map}
+        initialRegion={initialRegion}
+      >
         {stops.map((stop) => (
           <React.Fragment key={stop.id}>
             <Marker
@@ -56,6 +74,18 @@ export function LiveMap({
             />
           </React.Fragment>
         ))}
+
+        {userLocation ? (
+          <Marker
+            coordinate={{ latitude: userLocation.lat, longitude: userLocation.lng }}
+            title="You"
+            anchor={{ x: 0.5, y: 0.5 }}
+          >
+            <View style={styles.user}>
+              <View style={styles.userCore} />
+            </View>
+          </Marker>
+        ) : null}
 
         {shuttleLocation ? (
           <Marker
@@ -111,6 +141,22 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 6,
     elevation: 6,
+  },
+  user: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: 'rgba(22, 163, 74, 0.25)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  userCore: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: colors.success,
+    borderWidth: 2,
+    borderColor: colors.surface,
   },
   shuttleDegraded: {
     backgroundColor: colors.warning,

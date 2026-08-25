@@ -22,7 +22,7 @@ export function useGeofence(stops: Stop[], allowCollege = false, hostelStopId?: 
 
   const candidates = allowCollege
     ? stops.filter((s) => s.id === 'college' || s.id === hostelStopId)
-    : stops.filter((s) => s.id === hostelStopId);
+    : stops.filter((s) => s.id === hostelStopId || s.id === 'college');
 
   async function check() {
     setResult((r) => ({ ...r, checking: true, error: null }));

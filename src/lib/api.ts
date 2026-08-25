@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { Stop, ShuttleSession, ShuttleLocation, PickupRequest, TripType } from '@/types';
+import { Stop, ShuttleSession, ShuttleLocation, PickupRequest, TripType, RequestRosterRow } from '@/types';
 
 export async function fetchStops(): Promise<Stop[]> {
   const { data, error } = await supabase
@@ -69,6 +69,12 @@ export async function fetchMyActiveRequest(studentId: string): Promise<PickupReq
     .maybeSingle();
   if (error) throw error;
   return (data as unknown as PickupRequest) ?? null;
+}
+
+export async function fetchRequestRoster(): Promise<RequestRosterRow[]> {
+  const { data, error } = await supabase.rpc('get_request_roster');
+  if (error) throw error;
+  return (data ?? []) as RequestRosterRow[];
 }
 
 export async function fetchPendingCount(stopId: string): Promise<number> {

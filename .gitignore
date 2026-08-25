@@ -17,5 +17,7 @@ android/
 # Local agent state
 .commandcode/
 
+# Supabase CLI local state
+supabase/.temp/
+
 # Expo
-expo-env.d.ts
