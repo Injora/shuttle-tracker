@@ -17,7 +17,6 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.shuttletracker.app",
       "config": {
-        "googleMapsApiKey": "AIzaSyDrClk7jr9L532LhFAW4IGr2GohVzph4Ts"
       },
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Shuttle Tracker uses your location to verify you are at a registered stop before requesting a pickup.",
@@ -35,7 +34,6 @@
       },
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyDrClk7jr9L532LhFAW4IGr2GohVzph4Ts"
         }
       },
       "permissions": [
